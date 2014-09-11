@@ -6,13 +6,13 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     clean = require('gulp-clean'),
     concat = require('gulp-concat'),
-//    notify = require('gulp-notify'),
     cache = require('gulp-cache'),
-//    livereload = require('gulp-livereload'),
-    //lr = require('tiny-lr'),
     path = require('path'),
     livereloadport = 35729,
-    cheerio = require('gulp-cheerio'),
+    gcheerio = require('gulp-cheerio'),
+    cheerio = require('cheerio'),
+    webserver = require('gulp-webserver'),
+    async = require('async'),
     fs = require('fs')
     ;
 
@@ -25,7 +25,6 @@ gulp.task('styles', function() {
     .pipe(rename({suffix: '.min'}))
     .pipe(minifycss())
     .pipe(gulp.dest('style'))
-    //.pipe(notify({ message: 'Styles task complete' }))
     ;
 });
 
@@ -36,47 +35,78 @@ gulp.task('scripts', function() {
     .pipe(rename({suffix: '.min'}))
     .pipe(uglify())
     .pipe(gulp.dest('js'))
-    //.pipe(notify({ message: 'Scripts task complete' }))
     ;
 });
 
 gulp.task('html', function(){
-  return gulp.src('src/index.html')
-    .pipe(cheerio({
-      run: function($, done){
-        var els = $('[embed-src]');
-        els.each(function(){
-          var el = $(this);
-          var srcFile = 'src/'+$(this).attr('embed-src');
-          var src = fs.readFileSync(srcFile);
-          el.removeAttr('embed-src');
+  var doReplaceEmbeds = function($, done){
+    var els = $('[embed-src]');
+    async.each(els, function reformEmbed(elem, next){
+      var el = $(elem);
+      var srcFile = 'src/'+el.attr('embed-src');
+      var src = fs.readFile(srcFile, function loadSource(err, src){
+        if(err){
+          throw new Error(err);
+        }
+        el.removeAttr('embed-src');
+        replaceEmbeds(src.toString(), function(err, src){
           el.html(src);
+          next();
         });
-        done();
+      });
+    }, function(){
+      done(null, $.html());
+    });
+  };
+  var replaceEmbeds = function replaceEmbeds(src, done){
+    // TODO: Implement a proper recursive embedder and use it
+    var $ = cheerio.load(src);
+    doReplaceEmbeds($, done);
+  };
+  return gulp.src('src/index.html')
+    .pipe(gcheerio({
+      cheerio: cheerio,
+      run: function($, done){
+        doReplaceEmbeds($, function globalReplace(err, src){
+          done();
+        });
       }
     }))
     .pipe(gulp.dest('./'))
-    //.pipe(notify({ message: 'HTML task complete' }))
     ;
 });
 
 gulp.task('vendor', function(){
   return gulp.src('src/vendor/**/*')
     .pipe(gulp.dest('vendor'))
-    //.pipe(notify({ message: 'Vendor task complete' }))
     ;
 });
 
 gulp.task('images', function() {
   return gulp.src('src/images/**/*')
     .pipe(gulp.dest('images'))
-    //.pipe(notify({ message: 'Images task complete' }))
     ;
 });
 
 gulp.task('clean', function() {
   return gulp.src(['style', 'js', 'partials', 'images', 'vendor', 'index.html'], {read: false})
     .pipe(clean());
+});
+
+gulp.task('serve', function(){
+  gulp.src('./')
+    .pipe(webserver({
+      livereload: true,
+      fallback: 'index.html',
+      filter: function(filename){
+        console.log(filename);
+        if(filename.match(/^(node_modules|src)/)){
+          return false;
+        }
+        return true;
+      },
+      open: false
+    }));
 });
 
 gulp.task('watch', ['clean'], function() {
@@ -95,6 +125,10 @@ gulp.task('watch', ['clean'], function() {
   gulp.watch('src/vendor/**/*', ['vendor']);
 
   gulp.start('styles', 'scripts', 'html', 'vendor', 'images');
+});
+
+gulp.task('dev', ['watch'], function(){
+  gulp.start('serve');
 });
 
 gulp.task('default', ['clean'], function() {
