@@ -1,0 +1,4 @@
+This is very much a work in
+progress and is really my playground to building a static site using nothing
+more than Gulp.js.  Plan on including samples of some of the repos I maintain
+and a blog of some sort.  Right now its pretty bare.
