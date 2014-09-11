@@ -1,8 +1,10 @@
 <div class="ink-grid vertical-space">
   {{#each this}}
+    {{#unless fork}}
     <div>
-      <h3><a href="{{html_url}}">{{name}}</a></h3>
+      <h3><a href="{{url}}">{{name}}</a></h3>
       <p>{{description}}</p>
     </div>
+    {{/unless}}
   {{/each}}
 </div>

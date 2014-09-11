@@ -14,7 +14,7 @@
        <ul class="menu horizontal blue">
           <li><a class="logoPlaceholder" href="#home" id="header_logo_text">Jeremy Darling</a></li>
           <li><a href="#blog">Blog</a></li>
-          <li><a href="#samples">samples</a></li>
+          <li><a href="#projects">Projects</a></li>
        </ul>
     </nav>
 
@@ -41,12 +41,14 @@
   <p>Coming soon</p>
 </div>
 </script>
-    <script type="text/x-template" id="samples" nav="samples" data-api="https://api.github.com/users/jdarling/repos"><div class="ink-grid vertical-space">
+    <script type="text/x-template" id="projects" nav="projects" data-api="https://api.github.com/users/jdarling/repos"><div class="ink-grid vertical-space">
   {{#each this}}
+    {{#unless fork}}
     <div>
-      <h3><a href="{{html_url}}">{{name}}</a></h3>
+      <h3><a href="{{url}}">{{name}}</a></h3>
       <p>{{description}}</p>
     </div>
+    {{/unless}}
   {{/each}}
 </div>
 </script>
