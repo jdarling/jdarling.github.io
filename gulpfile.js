@@ -42,14 +42,6 @@ gulp.task('scripts', function() {
     .pipe(source('app.js'))
     .pipe(gulp.dest('js'))
     ;
-
-  return gulp.src(['src/js/app.js', 'src/lib/**/*.js', 'src/js/**/!(app|init)*.js', 'src/js/init.js'])
-    .pipe(concat('app.js'))
-    .pipe(gulp.dest('js'))
-    .pipe(rename({suffix: '.min'}))
-    .pipe(uglify())
-    .pipe(gulp.dest('js'))
-    ;
 });
 
 gulp.task('html', function(){
@@ -74,7 +66,6 @@ gulp.task('html', function(){
     });
   };
   var replaceEmbeds = function replaceEmbeds(src, done){
-    // TODO: Implement a proper recursive embedder and use it
     var $ = cheerio.load(src);
     doReplaceEmbeds($, done);
   };
