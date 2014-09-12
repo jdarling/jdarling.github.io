@@ -46,7 +46,8 @@ gulp.task('html', function(){
       var srcFile = 'src/'+el.attr('embed-src');
       var src = fs.readFile(srcFile, function loadSource(err, src){
         if(err){
-          throw new Error(err);
+          console.error(err);
+          src = 'File not found: '+srcFile;
         }
         el.removeAttr('embed-src');
         replaceEmbeds(src.toString(), function(err, src){
@@ -99,7 +100,6 @@ gulp.task('serve', function(){
       livereload: true,
       fallback: 'index.html',
       filter: function(filename){
-        console.log(filename);
         if(filename.match(/^(node_modules|src)/)){
           return false;
         }
