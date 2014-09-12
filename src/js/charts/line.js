@@ -1,4 +1,4 @@
-function Line() {
+module.exports = function Line() {
   var
     margin = {top: 30, right: 10, bottom: 50, left: 50},
     width = -1,
@@ -48,7 +48,7 @@ function Line() {
         .attr('transform', function(d, i) { return 'translate(' + xScale(i) + ', ' +  (height+margin.top) + ')'; })
         .attr('r', 4)
         ;
-        
+
       var points = node.selectAll('.point')
         .attr('transform', function(d, i) { return 'translate(' + xScale(i) + ', ' +  yScale(yValue(d)) + ')'; })
         ;
@@ -60,7 +60,7 @@ function Line() {
     onUpdate = false,
     getColor = false
     ;
-    
+
   function chart(selection) {
     selection.each(function(data) {
       var wid = width===-1?this.offsetWidth:width;
@@ -72,7 +72,7 @@ function Line() {
           .domain([0, d3.max(data, function(series) { return series.length-1; })])
           .range([0, wid - margin.left - margin.right])
           ;
-          
+
       //var ys = d3.extent(data.map(yValue));
       var ys = [
           d3.min(data, function(s) { return d3.min(s, yValue) }),
@@ -103,7 +103,7 @@ function Line() {
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       var lineGroup = svg.select(".series").selectAll("g.line")
-        .data(data);  
+        .data(data);
       var sampleEnter = lineGroup.enter().append('g').classed('line', true);
       enterSample(sampleEnter);
       updateSample(lineGroup);
@@ -112,12 +112,12 @@ function Line() {
             .duration(duration));
       */
       exitSample(lineGroup.exit().remove());
-          
+
       // x axis at the bottom of the chart
       g.select(".x.axis.bottom")
         .attr("transform", "translate(0," + (height - margin.top - margin.bottom) + ")")
         .call(xAxis);
-    
+
       // Update the y-axis.
       g.select(".y.axis")
         .call(yAxis);
@@ -133,13 +133,13 @@ function Line() {
           svg.selectAll(key).attr('style', style[key]);
         }
       }
-      
+
       if(onUpdate){
         onUpdate(svg);
       }
     });
   };
-  
+
   function X(d) {
     return xScale(xValue(d));
   }
@@ -147,7 +147,7 @@ function Line() {
   function Y(d) {
     return yScale(yValue(d));
   }
-  
+
   chart.width = function(_) {
     if (!arguments.length) return width;
     width = _;
@@ -159,7 +159,7 @@ function Line() {
     height = _;
     return chart;
   };
-  
+
   chart.x = function(_) {
     if (!arguments.length) return xValue;
     xValue = _;
@@ -171,7 +171,7 @@ function Line() {
     yValue = _;
     return chart;
   };
-  
+
   chart.xScale = function(_) {
     if (!arguments.length) return xScale;
     xScale = _;
@@ -183,13 +183,13 @@ function Line() {
     yScale = _;
     return chart;
   };
-  
+
   chart.colorize = function(_){
     if (!arguments.length) return getColor;
     getColor = _;
     return chart;
   };
-  
+
   chart.text = function(_) {
     if (!arguments.length) return getText;
     getText = _;
@@ -207,7 +207,7 @@ function Line() {
     duration = _;
     return chart;
   };
-  
+
   chart.margin = function(_) {
     if (!arguments.length) return margin;
     margin.top    = typeof _.top    != 'undefined' ? _.top    : margin.top;
@@ -222,6 +222,6 @@ function Line() {
     onUpdate = _;
     return chart;
   };
-  
+
   return chart;
 };

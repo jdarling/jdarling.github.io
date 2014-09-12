@@ -1,0 +1,20 @@
+<div class="ink-grid vertical-space">
+  Charts working from markdown:
+  <div data-controller="Markdown" embed-src="partials/posts/charts.md"></div>
+
+  Charts working from HTML:
+  <div data-controller="BarChart" data-chart-x="d.text" data-chart-y="d.value || 0" data-chart-colorize="d.color">
+    [
+      {
+        value: 100,
+        color: 'blue',
+        text: 'Test 1'
+      },
+      {
+        value: 75,
+        color: 'red',
+        text: 'Test 2'
+      }
+    ]
+  </div>
+</div>

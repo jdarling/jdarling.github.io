@@ -1,4 +1,4 @@
-function Bar() {
+module.exports = function Bar() {
   var
       margin = {top: 30, right: 10, bottom: 50, left: 50},
       width = -1,
@@ -36,7 +36,7 @@ function Bar() {
       exitBar = function(bar){
       }
       ;
-      
+
   function chart(selection) {
     selection.each(function(data) {
       var w = width===-1?this.offsetWidth:width;
@@ -76,7 +76,7 @@ function Bar() {
      // Update the bars.
       var bars = svg.select(".bars");//.selectAll(".bar");//.data(data);
       var bar = bars.selectAll('g.bar').data(data);
-      
+
       var barEnter = bar.enter()
         .append("g")
         .attr('class', 'bar')
@@ -87,7 +87,7 @@ function Bar() {
         .remove()
         ;
       exitBar(barExit);
-      
+
     // x axis at the bottom of the chart
     g.select(".x.axis.bottom")
         .attr("transform", "translate(0," + (height - margin.top - margin.bottom) + ")")
@@ -96,7 +96,7 @@ function Bar() {
      g.select(".x.axis.zero")
         .attr("transform", "translate(0," + Y0() + ")")
         .call(xAxis.tickFormat("").tickSize(0));
-    
+
       // Update the y-axis.
       g.select(".y.axis")
         .call(yAxis);
@@ -112,7 +112,7 @@ function Bar() {
           svg.selectAll(key).attr('style', style[key]);
         }
       }
-      
+
       if(onUpdate){
         onUpdate(svg);
       }
@@ -148,13 +148,13 @@ function Bar() {
     duration = _;
     return chart;
   };
-  
+
   chart.xRoundBands = function(_) {
     if (!arguments.length) return xRoundBands;
     xRoundBands = _;
     return chart;
   };
-  
+
   chart.width = function(_) {
     if (!arguments.length) return width;
     width = _;
@@ -184,25 +184,25 @@ function Bar() {
     enterBar = _;
     return chart;
   };
-  
+
   chart.barUpdate = function(_){
     if (!arguments.length) return updateBar;
     updateBar = _;
     return chart;
   };
-  
+
   chart.barExit = function(_){
     if (!arguments.length) return exitBar;
     exitBar = _;
     return chart;
   };
-  
+
   chart.colorize = function(_){
     if (!arguments.length) return getColor;
     getColor = _;
     return chart;
   };
-  
+
   chart.style = function(_) {
     if (!arguments.length) return style;
     style = _;
@@ -214,10 +214,10 @@ function Bar() {
     onUpdate = _;
     return chart;
   };
-  
+
   chart.update = function() {
     container.transition().duration(duration).call(chart);
   };
-  
+
   return chart;
 };

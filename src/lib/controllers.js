@@ -43,4 +43,14 @@ var cleanupControllers = function (e) {
   }
 };
 
-document.body.addEventListener('DOMNodeRemoved', cleanupControllers, true);
+if(typeof(MutationObserver)!=='undefined'){
+  var observer = new MutationObserver(function(mutations){
+    mutations.forEach(cleanupControllers);
+  });
+  observer.observe(document.body, { childList: true });
+}else{
+  document.body.addEventListener('DOMNodeRemoved', cleanupControllers, true);
+}
+
+var controllers = new Controllers();
+module.exports = controllers;

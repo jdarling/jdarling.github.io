@@ -1,4 +1,4 @@
-var Pie = function(){
+var Pie = module.exports = function(){
   var
       margin = {top: 20, left: 50, bottom: 20, right: 20},
       width = -1,
@@ -55,7 +55,7 @@ var Pie = function(){
       exitSlice = function(node, arc){
       }
   ;
-  
+
   var chart = function(selection){
     container = selection;
     selection.each(function(data){
@@ -70,7 +70,7 @@ var Pie = function(){
         data[i][identity] = data[i][identity] || idx++;
       }
       colorRange = d3.scale.linear().domain([min, max]).range(["#ddd", "#333"]);
-      
+
       if(!vis[0][0]){
         vis = d3.select(this).append('svg');
       }
@@ -78,14 +78,14 @@ var Pie = function(){
         .attr('width', wid)
         .attr('height', height)
         ;
-      
+
       var arc = d3.svg.arc()
           .outerRadius(r)
           .innerRadius(ir);
 
       var pie = d3.layout.pie()
           .value(getValue);
-      
+
       var main = vis.select('g');
       var slices = main.select('.slices');
       if(!main[0][0]){
@@ -95,74 +95,74 @@ var Pie = function(){
       main
         .attr('transform', 'translate('+(margin.left+(w/2))+', '+(margin.top+(h/2))+')')
         ;
-      
+
       var slice = slices.selectAll('g.slice')
         .data(pie(data, getIdentity));
         ;
-      
+
       var sliceEnter = slice.enter()
         .append('g')
         .attr('class', 'slice')
         ;
       enterSlice(sliceEnter, arc);
-      
+
       updateSlice(slice.transition().duration(duration), arc);
-      
+
       var sliceExit = slice.exit()
         .remove()
         ;
-      
+
       exitSlice(sliceExit);
-      
+
       if(style){
         var key;
         for(key in style){
           vis.selectAll(key).attr('style', style[key]);
         }
       }
-      
+
       if(onUpdate){
         onUpdate(vis);
       }
     });
   };
-    
+
   chart.width = function(_) {
     if (!arguments.length) return width;
     width = _;
     return chart;
   };
-  
+
   chart.height = function(_) {
     if (!arguments.length) return height;
     height = _;
     return chart;
   };
-  
+
   chart.value = function(_) {
     if (!arguments.length) return getValue;
     getValue = _;
     return chart;
   };
-  
+
   chart.text = function(_) {
     if (!arguments.length) return getText;
     getText = _;
     return chart;
   };
-  
+
   chart.duration = function(_) {
     if (!arguments.length) return duration;
     duration = _;
     return chart;
   };
-  
+
   chart.identity = function(_) {
     if (!arguments.length) return identity;
     identity = _;
     return chart;
   };
-  
+
   chart.innerRadius = function(_){
     if (!arguments.length) return ir;
     ir = _;
@@ -195,12 +195,12 @@ var Pie = function(){
     getColor = _;
     return chart;
   };
-  
+
   chart.refresh = function() {
   };
   chart.update = function() {
     container.transition().duration(duration).call(chart);
   };
-  
+
   return chart;
 };

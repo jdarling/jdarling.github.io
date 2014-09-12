@@ -1,10 +1,23 @@
-var controllers = controllers || new Controllers();
+var MindMap = require('../../charts/mindmap.js');
+var applyChartConfiguration = require('../../../lib/charts').applyChartConfiguration;
 
 var MindMapController = function(container, data){
   var self = this;
   self.container = container;
   self.chart= MindMap();
   applyChartConfiguration('mm', container, self.chart, ['width', 'height', 'identity', 'duration', 'style']);
+  if(!data){
+    try{
+      var src = container.innerText;
+      if(src){
+        var f = new Function('return '+src+';');
+        data = f();
+      }
+      container.innerHTML = '';
+    }catch(e){
+      console.log(e);
+    }
+  }
   if(data){
     self.update(data);
   }
@@ -23,4 +36,4 @@ MindMapController.prototype.update = function(data){
     ;
 };
 
-controllers.register('MindMap', MindMapController);
+require('../../../lib/controllers').register('MindMap', MindMapController);

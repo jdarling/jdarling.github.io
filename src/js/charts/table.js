@@ -1,4 +1,4 @@
-var Table = function(){
+var Table = module.exports = function(){
   var
       width = -1,
       height = -1,
@@ -64,11 +64,11 @@ var Table = function(){
           .attr('height', height)
           ;
       }
-      
+
       if(colHeaders.length===0 && data.length){
         colHeaders = Object.keys(data[0]);
       }
-      
+
       var th = thead.select('tr');
       if(!th[0][0]){
         th = thead.append('tr');
@@ -82,11 +82,11 @@ var Table = function(){
         .append('th')
         ;
       headerEnter(thEnter, colHeaders);
-      
+
       headerUpdate(th, colHeaders);
-      
+
       headerExit(th.exit().remove(), colHeaders);
-      
+
       var rows = tbody.selectAll('tr')
         .data(data)
         ;
@@ -94,7 +94,7 @@ var Table = function(){
         .enter()
         .append('tr')
         ;
-        
+
       var cells = rows.selectAll('td')
         .data(colHeaders)
           ;
@@ -105,50 +105,50 @@ var Table = function(){
       cellEnter(cellsEnter, colHeaders);
       cellUpdate(cells, colHeaders);
       cellExit(rows.exit().remove().selectAll('td'), colHeaders);
-      
+
       if(style){
         var key;
         for(key in style){
           vis.selectAll(key).attr('style', style[key]);
         }
       }
-      
+
       if(onUpdate){
         onUpdate(vis);
       }
     });
   };
-  
+
   chart.width = function(_) {
     if (!arguments.length) return width;
     width = _;
     return chart;
   };
-  
+
   chart.height = function(_) {
     if (!arguments.length) return height;
     height = _;
     return chart;
   };
-  
+
   chart.identity = function(_) {
     if (!arguments.length) return identity;
     identity = _;
     return chart;
   };
-  
+
   chart.cols = function(_) {
     if (!arguments.length) return cols;
     cols = _;
     return chart;
   };
-  
+
   chart.duration = function(_) {
     if (!arguments.length) return duration;
     duration = _;
     return chart;
   };
-  
+
   chart.style = function(_) {
     if (!arguments.length) return style;
     style = _;
@@ -166,20 +166,20 @@ var Table = function(){
     cellEnter = _;
     return chart;
   };
-  
+
   chart.cellUpdate = function(_){
     if (!arguments.length) return cellUpdate;
     cellUpdate = _;
     return chart;
   };
-  
+
   chart.cellExit = function(_){
     if (!arguments.length) return cellExit;
     cellExit = _;
     return chart;
   };
-  
+
   chart.update = function() { container.transition().duration(duration).call(chart); };
-  
+
   return chart;
 };

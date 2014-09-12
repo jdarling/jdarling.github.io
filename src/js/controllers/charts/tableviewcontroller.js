@@ -1,4 +1,5 @@
-var controllers = controllers || new Controllers();
+var Table = require('../../charts/table.js');
+var applyChartConfiguration = require('../../../lib/charts').applyChartConfiguration;
 
 var TableViewController = function(container, data){
   var self = this;
@@ -10,6 +11,18 @@ var TableViewController = function(container, data){
       vis.attr('class', 'ink-table');
     })
     ;
+  if(!data){
+    try{
+      var src = container.innerText;
+      if(src){
+        var f = new Function('return '+src+';');
+        data = f();
+      }
+      container.innerHTML = '';
+    }catch(e){
+      console.log(e);
+    }
+  }
   if(data){
     self.update(data);
   }
@@ -38,4 +51,4 @@ TableViewController.prototype.update = function(data){
     ;
 };
 
-controllers.register('TableView', TableViewController);
+require('../../../lib/controllers').register('TableView', TableViewController);

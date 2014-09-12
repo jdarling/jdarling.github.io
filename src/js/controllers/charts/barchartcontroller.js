@@ -1,10 +1,26 @@
-var controllers = controllers || new Controllers();
+var Bar = require('../../charts/bar.js');
+var applyChartConfiguration = require('../../../lib/charts').applyChartConfiguration;
+var Support = require('../../../lib/support.js');
+var el = Support.el;
+var els = Support.els;
 
 var BarChartController = function(container, data){
   var self = this;
   self.container = container;
   self.chart= Bar();
   applyChartConfiguration('chart', container, self.chart, ['width', 'height', 'identity', 'duration', 'style']);
+  if(!data){
+    try{
+      var src = container.innerText;
+      if(src){
+        var f = new Function('return '+src+';');
+        data = f();
+      }
+      container.innerHTML = '';
+    }catch(e){
+      console.log(e);
+    }
+  }
   if(data){
     self.update(data);
   }
@@ -22,4 +38,4 @@ BarChartController.prototype.update = function(data){
     ;
 };
 
-controllers.register('BarChart', BarChartController);
+require('../../../lib/controllers.js').register('BarChart', BarChartController);

@@ -1,10 +1,23 @@
-var controllers = controllers || new Controllers();
+var Scatter = require('../../charts/scatter.js');
+var applyChartConfiguration = require('../../../lib/charts').applyChartConfiguration;
 
 var ScatterChartController = function(container, data){
   var self = this;
   self.container = container;
   self.chart= Scatter();
   applyChartConfiguration('chart', container, self.chart, ['width', 'height', 'identity', 'duration', 'style']);
+  if(!data){
+    try{
+      var src = container.innerText;
+      if(src){
+        var f = new Function('return '+src+';');
+        data = f();
+      }
+      container.innerHTML = '';
+    }catch(e){
+      console.log(e);
+    }
+  }
   if(data){
     self.update(data);
   }
@@ -36,4 +49,4 @@ ScatterChartController.prototype.update = function(data){
     ;
 };
 
-controllers.register('ScatterChart', ScatterChartController);
+require('../../../lib/controllers').register('ScatterChart', ScatterChartController);

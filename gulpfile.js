@@ -13,6 +13,9 @@ var gulp = require('gulp'),
     cheerio = require('cheerio'),
     webserver = require('gulp-webserver'),
     async = require('async'),
+    source = require('vinyl-source-stream'),
+    browserify = require('browserify'),
+    glob = require('glob'),
     fs = require('fs')
     ;
 
@@ -29,7 +32,18 @@ gulp.task('styles', function() {
 });
 
 gulp.task('scripts', function() {
-  return gulp.src(['src/lib/**/*.js', 'src/js/**/!(app)*.js', 'src/js/app.js'])
+  var sources = glob.sync('./src/js/controllers/**/*.js');
+  sources.unshift('./src/js/app.js');
+  return browserify({
+      entries: sources,
+      fullPaths: true
+    })
+    .bundle()
+    .pipe(source('app.js'))
+    .pipe(gulp.dest('js'))
+    ;
+
+  return gulp.src(['src/js/app.js', 'src/lib/**/*.js', 'src/js/**/!(app|init)*.js', 'src/js/init.js'])
     .pipe(concat('app.js'))
     .pipe(gulp.dest('js'))
     .pipe(rename({suffix: '.min'}))
@@ -121,6 +135,7 @@ gulp.task('watch', ['clean'], function() {
   gulp.watch('src/images/**/*', ['images']);
   // Watch the html files
   gulp.watch('src/**/*.html', ['html']);
+  gulp.watch('src/**/*.md', ['html']);
   // Watch the vendor files
   gulp.watch('src/vendor/**/*', ['vendor']);
 
