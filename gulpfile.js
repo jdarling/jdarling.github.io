@@ -16,6 +16,7 @@ var gulp = require('gulp'),
     source = require('vinyl-source-stream'),
     browserify = require('browserify'),
     glob = require('glob'),
+    imagemin = require('gulp-imagemin'),
     fs = require('fs')
     ;
 
@@ -90,6 +91,11 @@ gulp.task('vendor', function(){
 
 gulp.task('images', function() {
   return gulp.src('src/images/**/*')
+    .pipe(imagemin({
+      progressive: true,
+      interlaced: true,
+      svgoPlugins: [{removeViewBox: false}]
+    }))
     .pipe(gulp.dest('images'))
     ;
 });
